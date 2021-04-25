@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  production: &site
+    image: site
+    ports:
+      - "81:80"
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  site-local:
+    <<: *site
+    ports:
+      - "82:80"
+    volumes:
+      - .:/code

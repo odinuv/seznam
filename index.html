@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Title</title>
+    <script src='jquery-3.5.1.min.js' type='application/javascript'></script>
+    <script src='jquery.color-2.1.2.min.js' type='application/javascript'></script>
+    <script src='jquery-ui.min.js' type='application/javascript'></script>
+    <script src='main.js' type='application/javascript'></script>
+    <link href="jquery-ui.min.css" rel="stylesheet">
+    <link href="jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="jquery-ui.theme.min.css" rel="stylesheet">
+    <style type='text/css'>
+        @font-face{
+            font-family: 'Roboto Thin';
+            url('Roboto-Thin-webfont.woff') format('woff');
+        }
+        @font-face{
+            font-family: 'Roboto Bold';
+        url('Roboto-Bold-webfont.woff') format('woff');
+        }
+        body {
+            font-family: 'Roboto Thin', sans-serif;
+            background-color: #A5B2C0;
+        }
+        .hide {
+            display: none;
+        }
+        .item {
+            font-family: 'Roboto Thin', sans-serif;
+            font-size: 16px;
+            margin: 5px 0 5px 5px;
+        }
+        .unread {
+            color: #203B59;
+            display: none;
+        }
+        .read {
+            color: #35506D;
+            display: inline !important;
+        }
+        .word {
+            display: none;
+        }
+        .highlight {
+            height: 10px;
+            border-top: 2px solid #506883;
+            width: 100%;
+            margin: 0 0 5px 0;
+        }
+        h2.item {
+            font-size: 24px;
+            text-align: center;
+        }
+        .highlighted {
+            font-family: 'Roboto Bold', sans-serif;
+            border-top: 2px solid #203B59;
+            font-size: 16px;
+            color: #35506D;
+        }
+        ul.root {
+            list-style-type: none;
+            width: 450px;
+            display: block;
+        }
+        ul {
+            list-style-type: '\00B7  ';
+        }
+        .active {
+            font-weight: bolder;
+        }
+        iframe#search-frame {
+            position: absolute;
+            top: 0;
+            left: 600px;
+            width: 1320px;
+            height: 850px;
+            display: block;
+        }
+        .content {
+            background-color: #74879C;
+            text-align: center;
+            margin-top: 50px;
+            font-size: 40px;
+        }
+        .modal-content {
+            background-color: #74879C;
+        }
+        #search {
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="dialog">
+        <p class="content"></p>
+    </div>
+
+    <ul class='root'>
+        <li class='group unread'>
+            <h2>Předkrmy</h2>
+            <ul>
+                <li class='unread'><p class='item'><span class='word'>Vepřová</span> <span class='word'>Paštika,</span> <span class='word'>Rohlík</span></p><p class='highlight'></p></li>
+<!--                <li class='unread'><p class='item'><span class='word'>Huspenina,</span> <span class='word'>Žemla</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Klobása,</span> <span class='word'>Okurka,</span> <span class='word'>Houska</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Buřt,</span> <span class='word'>Křen,</span> <span class='word'>Košík</span> <span class='word'>Pečiva</span></p><p class='highlight'></p></li>
+-->
+            </ul>
+        </li>
+<!--
+        <li class='group unread'>
+            <h2>Pomazánky</h2>
+            <ul>
+                <li class='unread'><p class='item'><span class='word'>Lososová</span><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Škvarková</span><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Masová</span><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Petrželová</span><p class='highlight'></p></li>
+            </ul>
+        </li>
+        <li class='group unread'>
+            <h2>Polévky</h2>
+            <ul>
+                <li class='unread'><p class='item'><span class='word'>Gulášová</span><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Zelná</span><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Mrkvová</span><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Koprová</span><p class='highlight'></p></li>
+            </ul>
+        </li>
+        <li class='group unread'>
+            <h2>Hlavní chody</h2>
+            <ul>
+                <li class='unread'><p class='item'><span class='word'>Telecí</span> <span class='word'>Řízek,</span> <span class='word'>Česneková</span> <span class='word'>Brambora</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Moravský</span> <span class='word'>Vrabec,</span> <span class='word'>Slaninová</span> <span class='word'>Knedla</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Pečený</span> <span class='word'>Bůček,</span> <span class='word'>Křenová</span> <span class='word'>Omáčka</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Slovenský</span> <span class='word'>Guláš,</span> <span class='word'>Knedlík</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Malý</span> <span class='word'>Kuřátko,</span> <span class='word'>Slanina</span>, <span class='word'>Kaša</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Velký</span> <span class='word'>Kuře,</span> <span class='word'>Kari</span> <span class='word'>Mrkva,</span> <span class='word'>Bramborová</span> <span class='word'>Kaše</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Pečená</span> <span class='word'>Kačena,</span> <span class='word'>Český</span> <span class='word'>Zelník</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Hlávková</span> <span class='word'>Kapusta,</span> <span class='word'>Brambor</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Caesar</span> <span class='word'>Salát</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Zelný</span> <span class='word'>Salátek</span></p><p class='highlight'></p></li>
+            </ul>
+        </li>
+        <li class='group unread'>
+            <h2>Zákusky</h2>
+            <ul>
+                <li class='unread'><p class='item'><span class='word'>Koláček</span><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Košíček</span> <span class='word'>Malina</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Meruňková</span> <span class='word'>Kostka</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Švestková</span> <span class='word'>Buchta</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Oříšková</span> <span class='word'>Trubička</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Jahodová</span> <span class='word'>Špička</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Smetanová</span> <span class='word'>Meruňka</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Větrník</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Koblížek</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Rakvička</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Věneček</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Dort</span></p><p class='highlight'></p></li>
+            </ul>
+        </li>
+
+        <li class='group unread'>
+            <h2>Nealko</h2>
+            <ul>
+                <li class='unread'><p class='item'><span class='word'>Višňová </span> <span class='word'>Šťáva</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Žlutá</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Malina</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Čaj</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Káva</span>, <span class='word'>Cukr</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Voda</span>, <span class='word'>Citron</span></p><p class='highlight'></p></li>
+            </ul>
+        </li>
+
+        <li class='group unread'>
+            <h2>Alko</h2>
+            <ul>
+                <li class='unread'><p class='item'><span class='word'>Pivo</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Müller</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Muškát</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Blatnický</span> <span class='word'>Roháč</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Zelená</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Čert</span></p><p class='highlight'></p></li>
+                <li class='unread'><p class='item'><span class='word'>Režná</span></p><p class='highlight'></p></li>
+            </ul>
+        </li>
+-->
+        <li class='group unread' style="margin-top: 200px">
+            <h2 class='long'>Jíst se dá všude</h2>
+        </li>
+
+        <li class='group unread'>
+            <h2 class='long'>Ale Vesmír je jen jeden</h2>
+            <ul>
+                <li class='unread'><p class='item'><span class='word'>Vesmír</span></p><p class='highlight'></p></li>
+            </ul>
+        </li>
+    </ul>
+    <!--<iframe id='search' src='iframe.html' frameborder="0">-->
+    <div class='unread' id='search'>
+        <iframe id='search-frame' src=''>
+        </iframe>
+    </div>
+</body>
+</html>

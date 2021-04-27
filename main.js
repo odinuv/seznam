@@ -7,25 +7,31 @@ $(document).ready(function() {
     const timings = {
         groupIn: 250,
         groupOut: 250,
-        itemIn: 3500,
-        itemOut: 5000,
-        letter: 250,
-        word: 2000,
+        itemIn: 2500,
+        itemOut: 1000,
+        word: 2500,
     }
+    const baseUrl = 'http://localhost:82/img/%1.png';
+    //const baseUrl = 'https://www.kdejsme.cz/prijmeni/%1/hustota/';
+
     const styles = {
         highlighted: {
             'width': '100%',
             'border-color': '#203B59',
         },
+        highlightedBorder: {
+            'width': '100%',
+            'border-color': '#203B59',
+        },
         normal: {
+        },
+        normalBorder: {
             'border-color': '#506883',
-          //  'color': '#FFBAAA',
+            'opacity': 0.1,
         },
         normalh2: {
             'font-family': 'Roboto Thin, sans-serif',
             'font-size': '24px',
-            //'color': '#802A15',
-           // 'color': '#FFBAAA',
         }
     }
     $('ul.root').find('li.group').each(function() {
@@ -56,7 +62,7 @@ $(document).ready(function() {
             $('#dialog').find('.content').text(group.prop('header').text());
             $('#dialog').dialog({
                 autoOpen: false,
-                height: "600",
+                height: "300",
                 width: "600",
                 modal: true,
                 classes: {
@@ -80,10 +86,14 @@ $(document).ready(function() {
                 $('#dialog').dialog("close");
                 group.prop('header').parents('li').removeClass('unread');
                 group.prop('header').addClass('read');
+                group.prop('header')[0].scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
                 $(this).animate(styles.normalh2, timings.groupOut, 'swing', function () {
                     let timeout = 0;
                     if (long) {
-                        timeout = 1;
+                        timeout = 3000;
                     }
                     setTimeout(function() { group.trigger('runItems'); }, timeout);
                 });
@@ -94,76 +104,58 @@ $(document).ready(function() {
     function runItems() {
         const group = groups[groupIndex];
         if ($(group.prop('items')[itemIndex]).length > 0) {
-            const wordCount = $(group.prop('items')[itemIndex]).prop('words').length;
             $(group.prop('items')[itemIndex]).prop('words')[0].trigger('runWord');
-            $(group.prop('items')[itemIndex]).prop('elm').animate(styles.highlighted, timings.itemIn * wordCount, 'swing', function () {
-                $(this).animate(styles.normal, timings.itemOut, 'swing', function () {
-                    if (itemIndex < group.prop('items').length - 1) {
-                        itemIndex++;
-                        group.trigger('runItems');
-                    } else {
-                        if (groupIndex < groups.length - 1) {
-                            itemIndex = 0;
-                            groupIndex++;
-                            group.trigger('runGroup');
-                        } else {
-                            console.log('finished');
-                        }
-                    }
-                });
-            });
         } else {
             groupIndex++;
             runGroup();
         }
     }
 
-    let letters;
-    let letterIndex = 0;
-
     function runWord()
     {
-        //console.log('search');
+        const letters = $(this).text().replace(',', '');
         $(document).find('#search').removeClass('unread');
-        //console.log('cd');
-        //console.log($(document).find('#search').find('iframe').prop('contentDocument'));
-        //let cd = $(document).find('#search').find('iframe').prop('contentDocument');
-        let baseUrl = 'http://localhost:82/';
-        //console.log('form');
-        //const field = $(cd).find('#frmform-what');
-        //console.log(field);
-        if (!$(this).hasClass('active')) {
-            letterIndex = 0;
-            letters = $(this).text().replace(',', '');
-            //field.val('');
-            $(this).addClass('active');
-            $(this).trigger('runWord');
+        //$(document).find('#search').find('iframe').attr('src', baseUrl.replace('%1', letters));
+        $(document).find('#search').find('img').attr('src', baseUrl.replace('%1', letters));
+        $(this).addClass('active');
+        $(this).addClass('read');
+        const group = groups[groupIndex];
+        $(this).parents('li').removeClass('unread');
+        $(group.prop('items')[itemIndex]).prop('elm')[0].scrollIntoView({
+            behavior: "smooth",
+            block: "end"
+        });
+        if ($(this).next('.word').length > 0) {
+            const t = $(this);
+            setTimeout(
+                function() {
+                    t.removeClass('active');
+                    t.next('.word').trigger('runWord');
+                },
+                timings.word
+            );
         } else {
-            if (letterIndex < letters.length) {
-                //field.val(field.val() + letters[letterIndex]);
-                letterIndex++;
-                const t = $(this);
-                setTimeout(function() { t.trigger('runWord'); }, timings.letter);
-            } else {
-                //const field = $(cd).find('#frmform-search');
-                console.log($(document).find('#search').find('iframe').attr('src', baseUrl + letters));
-                //field.click();
-                if ($(this).next('.word').length > 0) {
-                    const t = $(this);
-                    setTimeout(
-                        function() {
-                            t.addClass('read');
-                            t.parents('li').removeClass('unread');
-                            t.removeClass('active');
-                            t.next('.word').trigger('runWord');
-                        },
-                        timings.word
-                    );
-                } else {
-                    $(this).addClass('read');
-                    $(this).removeClass('active');
-                }
-            }
+            const t = $(this);
+            setTimeout(
+                function() {
+                    t.removeClass('active');
+                    $(group.prop('items')[itemIndex]).prop('elm').animate(styles.normalBorder, timings.itemOut, 'swing', function () {
+                        if (itemIndex < group.prop('items').length - 1) {
+                            itemIndex++;
+                            group.trigger('runItems');
+                        } else {
+                            if (groupIndex < groups.length - 1) {
+                                itemIndex = 0;
+                                groupIndex++;
+                                group.trigger('runGroup');
+                            } else {
+                                console.log('finished');
+                            }
+                        }
+                    });
+                },
+                timings.word
+            );
         }
     }
 
